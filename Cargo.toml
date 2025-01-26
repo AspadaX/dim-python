@@ -14,7 +14,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 async-openai = "0.26"
-dim-rs = { git = "https://github.com/AspadaX/dim", version = "0.2.0" }
 image = "0.25.5"
 pyo3-asyncio = { version = "0.20.0", features = ["tokio", "tokio-runtime"] }
 pyo3 = "0.20"
+dim-rs = { git = "https://github.com/AspadaX/dim", branch = "main" }
