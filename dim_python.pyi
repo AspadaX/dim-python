@@ -3,21 +3,26 @@ from typing import List, Optional
 async def vectorize_string(
     string: str,
     prompts: List[str],
-    model: str,
     api_key: str,
+    model: str,
+    temperature: Optional[float] = None,
+    seed: Optional[int] = None,
     base_url: Optional[str] = None
 ) -> List[float]:
-    """Vectorize a string using OpenAI's API.
+    """
+    Vectorizes a text string using concurrent processing
 
     Args:
         string: The input text to vectorize
         prompts: List of prompts to use for vectorization
-        model: The OpenAI model to use (e.g. "text-embedding-ada-002")
-        api_key: OpenAI API key
+        api_key: API key
+        model: Name of the model to use
+        temperature: Optional temperature setting for the model
+        seed: Optional seed for random number generation
         base_url: Optional custom API base URL
 
     Returns:
-        List of float values representing the vectorized string
+        Vector of floats representing the vectorized text
     """
     ...
 
@@ -26,18 +31,23 @@ async def vectorize_image(
     prompts: List[str],
     model: str,
     api_key: str,
+    temperature: Optional[float] = None,
+    seed: Optional[int] = None,
     base_url: Optional[str] = None
 ) -> List[float]:
-    """Vectorize an image using OpenAI's API.
+    """
+    Vectorizes an image using concurrent processing
 
     Args:
         image_bytes: Raw bytes of the image to vectorize
-        prompts: List of prompts to use for vectorization
-        model: The OpenAI model to use (e.g. "gpt-4-vision-preview")
-        api_key: OpenAI API key
+        prompts: List of prompts to use for vectorization 
+        model: Name of the model to use
+        api_key: API key
+        temperature: Optional temperature setting for the model
+        seed: Optional seed for random number generation
         base_url: Optional custom API base URL
 
     Returns:
-        List of float values representing the vectorized image
+        Vector of floats representing the vectorized image
     """
     ...

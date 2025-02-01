@@ -13,8 +13,8 @@ MODEL = "minicpm-v"  # or whatever model you're using
 async def test_vectorize_string():
     text = "This is a test string"
     prompts = [
-        "What is the sentiment of this text?",
-        "What is the main topic of this text?"
+        "What is the sentiment of this text? respond in json. example: {'score': your score in float between 0-1}",
+        "What is the main topic of this text? respond in json. example: {'score': your score in float between 0-1}"
     ]
     
     result = await vectorize_string(
@@ -22,7 +22,9 @@ async def test_vectorize_string():
         prompts=prompts,
         model=MODEL,
         api_key=API_KEY,
-        base_url=BASE_URL
+        base_url=BASE_URL,
+        temperature=0.0,
+        seed=42
     )
     
     assert isinstance(result, list)
@@ -38,8 +40,8 @@ async def test_vectorize_image():
     img_byte_arr = img_byte_arr.getvalue()
 
     prompts = [
-        "What is the main color in this image?",
-        "Describe what you see in this image."
+        "What is the brightness level of the primary color in this image? Respond in JSON. Example: {'score': your score in float between 0-1}",
+        "Describe the darkness level of the primary color in this image. Respond in JSON. Example: {'score': your score in float between 0-1}"
     ]
     
     result = await vectorize_image(
@@ -47,7 +49,9 @@ async def test_vectorize_image():
         prompts=prompts,
         model=MODEL,
         api_key=API_KEY,
-        base_url=BASE_URL
+        base_url=BASE_URL,
+        temperature=0.0,
+        seed=42
     )
     
     assert isinstance(result, list)
@@ -60,7 +64,9 @@ def test_missing_api_key():
             string="test",
             prompts=["test"],
             model=MODEL,
-            api_key=""
+            api_key="",
+            temperature=0.0,
+            seed=42,
         ))
 
 if __name__ == "__main__":

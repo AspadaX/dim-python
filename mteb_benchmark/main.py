@@ -44,47 +44,9 @@ async def run(sentence: str) -> list[float]:
     return await vectorize_string(
         string=sentence,
         prompts = [
-            # Aspect 1: Transaction Intent
-            "Identify the primary banking action requested in the text. Options: payments, transfers, card issues, fraud reports, account access, fees, etc. "
-            "Format: {'transaction_intent': 'card_issue', 'confidence': 0-9}. Example: {'transaction_intent': 'card_payment_fee_charged', 'confidence': 8}",
-        
-            # Aspect 2: Product/Service Mention
-            "Detect specific banking products/services mentioned (e.g., credit card, loan, savings account). Return NONE if unspecified. "
-            "Format: {'product_mentioned': ['credit_card'], 'confidence': 7}. Example: {'product_mentioned': ['mobile_banking'], 'confidence': 6}",
-        
-            # Aspect 3: Urgency Detection
-            "Rate urgency for resolution: 1 (routine inquiry) to 9 (critical issue needing immediate action). "
-            "Format: {'urgency': 5}. Example (fraud report): {'urgency': 9}",
-        
-            # Aspect 4: Issue Type
-            "Classify the problem type: technical_error, fee_dispute, transaction_failure, account_access, fraud, etc. "
-            "Format: {'issue_type': 'transaction_failure', 'confidence': 7}. Example: {'issue_type': 'fee_dispute', 'confidence': 8}",
-        
-            # Aspect 5: Action Requested
-            "Identify the explicit action the user wants (e.g., block card, refund, update details, explain charges). "
-            "Format: {'action_requested': 'block_card', 'confidence': 9}. Example: {'action_requested': 'dispute_charge', 'confidence': 7}",
-        
-            # Aspect 6: Query Specificity
-            "Score specificity of details from 1 (vague: 'my card isn't working') to 9 (detailed: 'Wire transfer failed with error CODE-2023'). "
-            "Format: {'specificity': 4}. Example: {'specificity': 8}",
-        
-            # Aspect 7: Transaction Status
-            "Determine if the text references: pending, completed, failed, or disputed transactions. Return NONE if irrelevant. "
-            "Format: {'transaction_status': 'failed', 'confidence': 8}. Example: {'transaction_status': 'disputed', 'confidence': 7}",
-        
-            # Aspect 8: Fraud/Security Focus
-            "Is this query security/fraud-related? 1 (no) to 9 (yes). "
-            "Format: {'fraud_related': 3}. Example (stolen card): {'fraud_related': 9}",
-        
-            # Aspect 9: Payment Method
-            "Identify payment method involved: credit/debit card, bank transfer, direct debit, etc. Return NONE if unspecified. "
-            "Format: {'payment_method': 'credit_card', 'confidence': 8}. Example: {'payment_method': 'bank_transfer', 'confidence': 6}",
-        
-            # Aspect 10: Temporal Context
-            "Does the text reference time-sensitive terms (e.g., 'today', 'immediately', 'last week')? 1 (no) to 9 (yes). "
-            "Format: {'temporal_context': 5}. Example: {'temporal_context': 7}"
+            "Given a text input, label it according to the provided categories and output the result in JSON format. STRICTLY ADHERE TO THIS FORMAT: {'numeric_label': your score}\n activate_my_card: 0, age_limit: 1, apple_pay_or_google_pay: 2, atm_support: 3, automatic_top_up: 4, balance_not_updated_after_bank_transfer: 5, balance_not_updated_after_cheque_or_cash_deposit: 6, beneficiary_not_allowed: 7, cancel_transfer: 8, card_about_to_expire: 9, card_acceptance: 10, card_arrival: 11, card_delivery_estimate: 12, card_linking: 13, card_not_working: 14, card_payment_fee_charged: 15, card_payment_not_recognised: 16, card_payment_wrong_exchange_rate: 17, card_swallowed: 18, cash_withdrawal_charge: 19, cash_withdrawal_not_recognised: 20, change_pin: 21, compromised_card: 22, contactless_not_working: 23, country_support: 24, declined_card_payment: 25, declined_cash_withdrawal: 26, declined_transfer: 27, direct_debit_payment_not_recognised: 28, disposable_card_limits: 29, edit_personal_details: 30, exchange_charge: 31, exchange_rate: 32, exchange_via_app: 33, extra_charge_on_statement: 34, failed_transfer: 35, fiat_currency_support: 36, get_disposable_virtual_card: 37, get_physical_card: 38, getting_spare_card: 39, getting_virtual_card: 40, lost_or_stolen_card: 41, lost_or_stolen_phone: 42, order_physical_card: 43, passcode_forgotten: 44, pending_card_payment: 45, pending_cash_withdrawal: 46, pending_top_up: 47, pending_transfer: 48, pin_blocked: 49, receiving_money: 50, Refund_not_showing_up: 51, request_refund: 52, reverted_card_payment?: 53, supported_cards_and_currencies: 54, terminate_account: 55, top_up_by_bank_transfer_charge: 56, top_up_by_card_charge: 57, top_up_by_cash_or_cheque: 58, top_up_failed: 59, top_up_limits: 60, top_up_reverted: 61, topping_up_by_card: 62, transaction_charged_twice: 63, transfer_fee_charged: 64, transfer_into_account: 65, transfer_not_received_by_recipient: 66, transfer_timing: 67, unable_to_verify_identity: 68, verify_my_identity: 69, verify_source_of_funds: 70, verify_top_up: 71, virtual_card_not_working: 72, visa_or_mastercard: 73, why_verify_identity: 74, wrong_amount_of_cash_received: 75, wrong_exchange_rate_for_cash_withdrawal: 76"
         ],
-        model="minicpm-v",
+        model="mistral",
         api_key="sk-1234",
         base_url="http://192.168.0.101:11434/v1"
     )
@@ -92,12 +54,22 @@ async def run(sentence: str) -> list[float]:
 
 if __name__ == "__main__":
     
+    import logging
+
+    # Set up logging
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger(__name__)
+
+    logger.info("Starting the model evaluation")
+
     model = DimStringVectorization()
     tasks = mteb.get_tasks(tasks=["Banking77Classification"])
     evaluation = mteb.MTEB(tasks=tasks)
-    evaluation.run(model)
+    evaluation.run(model, verbosity=2)
+
+    logger.info("Model evaluation completed")
     
-    # print(asyncio.run(run("I am happy")))
+#     print(asyncio.run(run("I am happy")))
     
-    # for _ in range(10):
-    #     print(model.encode(["I am happy", "I am sad"]))
+#     for _ in range(10):
+#         print(model.encode(["I am happy", "I am sad"]))
